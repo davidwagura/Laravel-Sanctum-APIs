@@ -31,7 +31,28 @@ class ApiController extends Controller
 
     public function login(Request $request) 
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
+        $user = User::where('email', $request->email)->first();
+
+        if(!empty($user)) {
+            if(Hash::check($request->password, $user->password)){
+                $token  = $user->createToken("myToken")->plainTextToken;
+
+                return response()->json([
+                    'status' => true,
+                    'message' => "login successful",
+                    'token' => $token
+                ]);
+            }
+            return response()->json([
+                'status' => false,
+                'message' => "password didn't match"
+            ]);
+        }
     }
 
 
