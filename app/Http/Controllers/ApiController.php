@@ -71,7 +71,11 @@ class ApiController extends Controller
 
     public function logout(Request $request) 
     {
-
+        auth()->user()->tokens()->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'User logged out'
+        ]);
     }
 
 }
